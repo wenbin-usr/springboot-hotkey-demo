@@ -17,16 +17,17 @@ public class Cache {
     }
 
     public String get(String key) {
-        // 如果是热key
-        // 如果不是热 key，则返回 null，并且将 key 上报到探测集群进行数量探测。
+        // 如果是热key，从本地Caffeine缓存中获取，有可能为null
+        // 如果不是热key，则返回null，并且将key上报到探测集群进行数量探测。
         Object object = JdHotKeyStore.getValue(key);
         //如果已经缓存过了
         if (object != null) {
-            System.out.println("is hot key");
+            System.out.println(key + " is hot key");
             return object.toString();
         } else {
+            System.out.println(key + " not hot key");
             String value = getFromRedis(key);
-            // 如果是热 key，该方法才会赋值，非热 key，什么也不做
+            // 如果是热 key，该方法才会赋值，向本地Caffeine中写入缓存，非热 key，什么也不做
             JdHotKeyStore.smartSet(key, value);
             return value;
         }
