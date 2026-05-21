@@ -43,7 +43,7 @@
       <artifactId>hotkey-client</artifactId>
       <version>0.0.4-SNAPSHOT</version>
       <scope>system</scope>
-      <systemPath>D:\workspace\repositories\maven\hotkey-client-0.0.4-SNAPSHOT.jar</systemPath>
+      <systemPath>D:\workspace\repositories\maven\hotkey-client-0.0.4-SNAPSHOT-jar-with-dependencies.jar</systemPath>
     </dependency>
   </dependencies>
 </project>
