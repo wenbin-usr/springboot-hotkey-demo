@@ -50,12 +50,18 @@ jd-hotkey/
 |------|------|------|
 | **Spring Boot** | 2.2.1 | Worker 和 Dashboard 的应用框架 |
 | **Netty** | 4.1.42 | 客户端与 Worker 之间的高性能网络通信 |
-| **Etcd** | - | 服务发现、配置中心、Worker 协调 |
-| **Caffeine** | 2.8.0 | 高性能本地缓存（替代 Guava） |
+| **Etcd** (etcd-java) | 0.0.16 | 服务发现、配置中心、Worker 协调 |
+| **Caffeine** | 2.8.0 | 高性能本地缓存（替代 Guava Cache） |
+| **Guava** | - | EventBus 事件总线，用于客户端内部事件驱动（规则变更、Worker 变更、热键推送通知） |
 | **Disruptor** | 3.4.2 | 无锁环形缓冲区，Worker 内部高吞吐线程间通信 |
 | **Protostuff** | 1.7.4 | 高性能二进制序列化 |
+| **Snappy** | 1.1.7.3 | 快速压缩/解压缩，Netty 消息传输压缩 |
 | **FastJSON** | 1.2.83 | JSON 序列化（安全修复版本） |
 | **Hutool** | 5.1.0 | 工具类库 |
+| **JJWT** | 0.9.1 | JWT 令牌生成与验证，Dashboard 用户认证 |
+| **Apache POI** | 4.0.1 | Excel 导出，Dashboard 数据报表 |
+| **PageHelper** | - | MyBatis 分页插件，Dashboard 列表分页 |
+| **Thymeleaf** | - | 模板引擎，Dashboard 页面渲染 |
 | **MySQL** | - | Dashboard 数据持久化 |
 | **MyBatis** | - | Dashboard ORM |
 
