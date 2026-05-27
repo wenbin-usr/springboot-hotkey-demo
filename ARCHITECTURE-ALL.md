@@ -53,9 +53,9 @@ jd-hotkey/
 | **Etcd** (etcd-java) | 0.0.16 | 服务发现、配置中心、Worker 协调 |
 | **Caffeine** | 2.8.0 | 高性能本地缓存（替代 Guava Cache） |
 | **Guava** | - | EventBus 事件总线，用于客户端内部事件驱动（规则变更、Worker 变更、热键推送通知） |
-| **Disruptor** | 3.4.2 | 无锁环形缓冲区，Worker 内部高吞吐线程间通信 |
+| **Disruptor** | 3.4.2 | ~~无锁环形缓冲区~~ Worker 内部高吞吐线程间通信（**注：经验证，此依赖仅存在于 Worker 模块，Client/Client JAR 中未包含。Client 端使用双缓冲 ConcurrentHashMap 替代 Disruptor**） |
 | **Protostuff** | 1.7.4 | 高性能二进制序列化 |
-| **Snappy** | 1.1.7.3 | 快速压缩/解压缩，Netty 消息传输压缩 |
+| **Snappy** | 1.1.7.3 | ~~快速压缩/解压缩~~ **注：经验证，common 模块 POM 中声明了 snappy-java 依赖，但实际编码中 MsgEncoder/MsgDecoder 仅使用 Protostuff 序列化 + 分隔符帧，Netty Pipeline 中未添加 Snappy 压缩 Handler，Snappy 属于声明但未实际使用的依赖** |
 | **FastJSON** | 1.2.83 | JSON 序列化（安全修复版本） |
 | **Hutool** | 5.1.0 | 工具类库 |
 | **JJWT** | 0.9.1 | JWT 令牌生成与验证，Dashboard 用户认证 |
@@ -123,7 +123,7 @@ jd-hotkey/
 │    AppNameFilter → HeartBeatFilter│
 │    → HotKeyFilter → KeyCounterFilter│
 └────────┬────────────────────────┘
-         │ 3. 写入 Disruptor RingBuffer
+         │ 3. 写入 Disruptor RingBuffer（仅 Worker 模块）
          ↓
 ┌─────────────────────────────────┐
 │  KeyConsumer (多线程消费)        │
@@ -342,12 +342,12 @@ NodesServerHandler
 └── KeyCounterFilter  # 委托给 KeyProducer
 ```
 
-**Disruptor 模式：**
+**Disruptor 模式：**（仅 Worker 模块，Client 端未使用）
 - 高性能无锁线程间通信
 - 环形缓冲区，大小可配置（2 的幂）
 - 多消费者（线程数 = CPU 核心数）
 - 生产者：`KeyProducer`（来自 Netty 线程）
-- 消费者：`KeyConsumer`（处理并探测）
+- 消货者：`KeyConsumer`（处理并探测）
 
 #### 热键推送器
 
@@ -445,7 +445,7 @@ NodesServerHandler
 
 | 手段 | 说明 |
 |------|------|
-| Disruptor 无锁队列 | Worker 内部高吞吐线程间通信 |
+| Disruptor 无锁队列 | Worker 内部高吞吐线程间通信（Client 端未使用，采用双缓冲替代） |
 | 滑动窗口 | 高效的基于时间维度的计数算法 |
 | 批量处理 | 客户端批量发送 key，Worker 批量推送热键 |
 | Caffeine 本地缓存 | 高性能 W-TinyLFU 缓存淘汰策略 |
